@@ -8,8 +8,29 @@ class NegociacaoController{
         this._inputQuantidade = $('#quantidade');
         this._inputValor = $('#valor');
 
-        this._listaNegociacoes = new ListaNegociacoes(model => 
-            this._negociacoesView.update(model));
+
+        let self = this;
+        //Metodo cangaceiro
+        this._listaNegociacoes = new Proxy(new ListaNegociacoes() ,{
+            get(target, prop, receiver){
+
+                //Verificacao cangaceira
+                if(['adiciona', 'vazia'].includes(prop) && typeof(target[prop]) == typeof(Function)){
+
+                    return function(){
+                
+                        console.log(`interceptando ${prop}`);
+
+                        Reflect.apply(target[prop], target, arguments);
+                        self._negociacoesView.update(target);
+
+                    }
+
+                }else{
+                    return Reflect.get(target, prop, receiver);
+                }
+            }
+        });
 
         this._negociacoesView = new NegociacoesView($('#negociacoesView'));
         this._negociacoesView.update(this._listaNegociacoes);
