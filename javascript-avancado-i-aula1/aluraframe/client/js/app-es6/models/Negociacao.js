@@ -1,4 +1,4 @@
-class Negociacao{
+export class Negociacao{
 
     constructor(data, quantidade, valor){
         //_ -> Propriedades só podem ser acessadas pelos métodos da classe
